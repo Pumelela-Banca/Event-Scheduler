@@ -85,5 +85,27 @@ app.post('/create-event', async (req, res) => {
     }
 });
 
+// Route to list events in the user's calendar
 
+app.get('/list-events', async (req, res) => {
+    try {
+        const response = await calendar.events.list({
+            calendarId: 'primary',
+            timeMin: (new Date()).toISOString(),
+            maxResults: 10,
+            singleEvents: true,
+            orderBy: 'startTime',
+        });
+        const events = response.data.items;
+        if (events.length) {
+            res.status(200).send(events);
+        } else {
+            res.status(200).send('No upcoming events found.');
+        }
+    } catch (error) {
+        console.error('Error listing events:', error);
+        res.status(500).send('Error listing events');
+    }
+}
+);
 
