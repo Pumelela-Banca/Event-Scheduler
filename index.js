@@ -46,3 +46,44 @@ app.get("/auth/redirectt", async (req, res) => {
     res.send("Authentication successful! You can close this tab.");
 });
 
+
+// Initialize the Google Calendar API client
+const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+// Create a new event
+
+const event = {
+    summary: 'Google I/O 2023',
+    location: 'Online',
+    description: 'A chance to hear more about Google’s developer products.',
+    start: {
+        dateTime: '2023-10-01T09:00:00-07:00',
+        timeZone: 'America/Los_Angeles',
+    },
+    end: {
+        dateTime: '2023-10-01T17:00:00-07:00',
+        timeZone: 'America/Los_Angeles',
+    },
+    recurrence: [
+        'RRULE:FREQ=DAILY;COUNT=2'
+    ],
+};
+
+// Route to create an event in the user's calendar
+
+app.post('/create-event', async (req, res) => {
+    try {
+        const response = await calendar.events.insert({
+            calendarId: 'primary',
+            resource: event,
+            auth: oauth2Client,
+        });
+        res.status(200).send(`Event created: ${response.data.htmlLink}`);
+    } catch (error) {
+        console.error('Error creating event:', error);
+        res.status(500).send('Error creating event');
+    }
+});
+
+
+
