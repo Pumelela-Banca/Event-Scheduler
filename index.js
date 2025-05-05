@@ -16,7 +16,7 @@ const oauth2Client = new google.auth.OAuth2(
 
 const app = express();
 
-const port = process.env.PORT || 8000;
+const port = 80;
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Event Scheduler API");
@@ -77,6 +77,7 @@ app.post('/create-event', async (req, res) => {
             calendarId: 'primary',
             resource: event,
             auth: oauth2Client,
+            sendUpdates: 'all',
         });
         res.status(200).send(`Event created: ${response.data.htmlLink}`);
     } catch (error) {
@@ -106,6 +107,7 @@ app.get('/list-events', async (req, res) => {
         console.error('Error listing events:', error);
         res.status(500).send('Error listing events');
     }
-}
-);
+});
 
+
+// Add 
